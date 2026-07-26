@@ -1,5 +1,19 @@
 # Calendy Fit - API Integration Guide
 
+## ✅ Completed Integrations
+
+| Service | Status |
+|---------|--------|
+| Supabase | ✅ Configured |
+| Google OAuth | ✅ Configured |
+| Google Calendar API | ✅ Enabled |
+| Google Maps | ⏳ Pending |
+| Google Contacts | ⏳ Pending |
+| Google Drive | ⏳ Pending |
+| Stripe | ⏳ Optional |
+
+---
+
 ## Supabase Setup
 
 1. **Create a Supabase project** at https://supabase.com
@@ -7,7 +21,9 @@
 3. **Enable Auth providers**:
    - Go to Authentication → Providers
    - Enable Email/Password
-   - Enable Google → Add OAuth client ID from Google Cloud Console
+   - Enable Google → Enter:
+     - Client ID: `664719074795-41pajk4hb7c001sld26hqpjgus94h4bi.apps.googleusercontent.com`
+     - Client Secret: [provided in Supabase Dashboard only]
 4. **Create Storage buckets**:
    - `avatars` (public read, authenticated write)
    - `trainer-certificates` (authenticated read/write)
@@ -26,66 +42,74 @@
 ### 2. OAuth Consent Screen
 - APIs & Services → OAuth consent screen
 - User Type: External
-- Add scopes: `openid`, `email`, `profile`, `calendar`, `calendar.events`, `contacts.readonly`, `drive.file`
+- Add scopes:
+  ```
+  openid, email, profile
+  https://www.googleapis.com/auth/calendar
+  https://www.googleapis.com/auth/calendar.events
+  https://www.googleapis.com/auth/contacts.readonly   (optional)
+  https://www.googleapis.com/auth/drive.file           (optional)
+  ```
 
 ### 3. OAuth Credentials (Web)
 - Create OAuth 2.0 Client ID → Web application
+- **Client ID**: `664719074795-41pajk4hb7c001sld26hqpjgus94h4bi.apps.googleusercontent.com`
+- Authorized JavaScript origins:
+  - `http://localhost:3000`
+  - `https://sufiyan-sabeel.github.io`
 - Authorized redirect URIs:
   - `http://localhost:3000/auth/callback`
-  - `https://your-domain.com/auth/callback`
+  - `https://sufiyan-sabeel.github.io/Calendly-fit/auth/callback`
+  - `https://elevwhalcpkzjpeftoai.supabase.co/auth/v1/callback`
 
-### 4. OAuth Credentials (Android)
-- Create OAuth 2.0 Client ID → Android
-- Package name: `com.calendyfit.app`
-- SHA-1 fingerprint: Get from `npx expo credentials:manager`
+### 4. Enable APIs
+- ✅ Google Calendar API — [Enabled](https://console.cloud.google.com/apis/library/calendar-json.googleapis.com)
+- ⏳ Google Maps SDK (when configuring Maps)
+- ⏳ Places API (when configuring Maps)
+- ⏳ Directions API (when configuring Maps)
+- ⏳ Google People API (when configuring Contacts)
+- ⏳ Google Drive API (when configuring Drive)
 
-### 5. OAuth Credentials (iOS)
-- Create OAuth 2.0 Client ID → iOS
-- Bundle ID: `com.calendyfit.app`
-
-### 6. Enable APIs
-- Google Calendar API
-- Google People API (contacts)
-- Google Maps SDK (Android & iOS)
-- Places API
-- Directions API
-- Google Drive API
-
-### 7. API Keys
-- Create API Key → Restrict to: Calendar API, Maps API, People API, Drive API
+### 5. API Keys
+- Calendar API Key: Not required (uses OAuth)
+- Maps API Key: [Pending]
 
 ## Required OAuth Scopes
 
-| Scope | Purpose |
-|-------|---------|
-| `openid` | OpenID Connect |
-| `email` | Read user email |
-| `profile` | Read user name, avatar |
-| `https://www.googleapis.com/auth/calendar` | Calendar event management |
-| `https://www.googleapis.com/auth/calendar.events` | Event-level CRUD |
-| `https://www.googleapis.com/auth/contacts.readonly` | Import contacts |
-| `https://www.googleapis.com/auth/drive.file` | Export files to Drive |
+| Scope | Purpose | Required |
+|-------|---------|----------|
+| `openid` | OpenID Connect | ✅ Yes |
+| `email` | Read user email | ✅ Yes |
+| `profile` | Read user name, avatar | ✅ Yes |
+| `https://www.googleapis.com/auth/calendar` | Calendar event management | ✅ Yes |
+| `https://www.googleapis.com/auth/calendar.events` | Event-level CRUD | ✅ Yes |
+| `https://www.googleapis.com/auth/contacts.readonly` | Import contacts | ⚠️ Optional |
+| `https://www.googleapis.com/auth/drive.file` | Export files to Drive | ⚠️ Optional |
 
 ## Environment Variables
 
 ### Mobile (apps/mobile/.env)
 ```
-EXPO_PUBLIC_SUPABASE_URL=
-EXPO_PUBLIC_SUPABASE_ANON_KEY=
+EXPO_PUBLIC_SUPABASE_URL=https://elevwhalcpkzjpeftoai.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_BwzBRjsTHNijFaTZGsHuMg_ykfKbw8H
 EXPO_PUBLIC_GOOGLE_CLIENT_ID=
 EXPO_PUBLIC_GOOGLE_CALENDAR_API_KEY=
 EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=
 EXPO_PUBLIC_SUPABASE_REDIRECT_URL=calendyfit://auth/callback
+EXPO_PUBLIC_APP_NAME=Calendy Fit
 ```
 
 ### Web (apps/web/.env.local)
 ```
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-NEXT_PUBLIC_GOOGLE_CLIENT_ID=
+NEXT_PUBLIC_SUPABASE_URL=https://elevwhalcpkzjpeftoai.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_BwzBRjsTHNijFaTZGsHuMg_ykfKbw8H
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=664719074795-41pajk4hb7c001sld26hqpjgus94h4bi.apps.googleusercontent.com
 NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY=
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=
+NEXT_PUBLIC_GOOGLE_REDIRECT_URL=http://localhost:3000/auth/callback
 NEXT_PUBLIC_SUPABASE_REDIRECT_URL=http://localhost:3000/auth/callback
+NEXT_PUBLIC_APP_NAME=Calendy Fit
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 ## Official Documentation
