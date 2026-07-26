@@ -1,0 +1,16 @@
+{
+  "name": "@calendy/hooks",
+  "version": "1.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@tanstack/react-query": "^5.28.0",
+    "zustand": "^4.5.0",
+    "@calendy/api": "workspace:*",
+    "@calendy/types": "workspace:*",
+    "@calendy/config": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  }
+}
