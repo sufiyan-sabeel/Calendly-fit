@@ -41,7 +41,8 @@ export function initConfig(platform: 'mobile' | 'web'): void {
     config.googleMapsApiKey = getEnv('EXPO_PUBLIC_GOOGLE_MAPS_API_KEY');
   } else {
     config.supabaseUrl = getEnv('NEXT_PUBLIC_SUPABASE_URL');
-    config.supabaseAnonKey = getEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY');
+    // Accept both ANON_KEY and PUBLISHABLE_KEY (they are the same value)
+    config.supabaseAnonKey = getEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY') || getEnv('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY');
     config.googleClientId = getEnv('NEXT_PUBLIC_GOOGLE_CLIENT_ID');
     config.googleCalendarApiKey = getEnv('NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY');
     config.googleMapsApiKey = getEnv('NEXT_PUBLIC_GOOGLE_MAPS_API_KEY');
